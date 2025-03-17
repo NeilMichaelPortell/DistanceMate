@@ -1,20 +1,26 @@
 import 'package:flutter/material.dart';
+import 'widgets/home_screen.dart';
+import 'widgets/distance_screen.dart';
 
 void main() {
-  runApp(const MainApp());
+  runApp(const MyApp());
 }
 
-class MainApp extends StatelessWidget {
-  const MainApp({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
-        ),
+    return MaterialApp(
+      title: 'DistanceMate',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
       ),
+      initialRoute: '/', // Home page as the first screen
+      routes: {
+        '/': (context) => const HomeScreen(), // Home page route
+        '/distance': (context) => const DistanceScreen(),
+      },
     );
   }
 }
