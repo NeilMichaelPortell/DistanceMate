@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import '../models/distance_model.dart';
+import '../services/notifi_service.dart'; // Import the NotificationService
 
 class DistanceScreen extends StatefulWidget {
   const DistanceScreen({super.key});
@@ -13,11 +14,13 @@ class _DistancePageState extends State<DistanceScreen> {
   DistanceModel? _locationA;
   DistanceModel? _locationB;
   double? _distance;
+  final NotificationService _notificationService = NotificationService(); // Initialize the NotificationService
 
   @override
   void initState() {
     super.initState();
     _checkLocationPermission();
+    _notificationService.initNotification(); // Initialize notifications
   }
 
   Future<void> _checkLocationPermission() async {
@@ -69,6 +72,10 @@ class _DistancePageState extends State<DistanceScreen> {
     setState(() {
       if (isLocationA) {
         _locationA = DistanceModel(latitude: position.latitude, longitude: position.longitude);
+        _notificationService.showNotification(
+          title: 'Location A Set',
+          body: 'Waiting for Location B...',
+        ); // Show notification
       } else {
         _locationB = DistanceModel(latitude: position.latitude, longitude: position.longitude);
       }

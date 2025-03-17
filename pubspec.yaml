@@ -10,7 +10,8 @@ dependencies:
   flutter:
     sdk: flutter
   geolocator: ^9.0.1
-
+  flutter_local_notifications: ^17.0.0
+ 
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -18,3 +19,5 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+  

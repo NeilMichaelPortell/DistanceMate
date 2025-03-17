@@ -1,10 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import '../services/notifi_service.dart'; // Import the NotificationService
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    // Initialize the NotificationService
+    final NotificationService _notificationService = NotificationService();
+    _notificationService.initNotification();
+
+    // Check and request notification permissions
+    _checkNotificationPermission(context, _notificationService);
+
     return Scaffold(
       backgroundColor: Colors.lightBlueAccent,
       appBar: AppBar(
@@ -58,6 +67,33 @@ class HomeScreen extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Future<void> _checkNotificationPermission(BuildContext context, NotificationService notificationService) async {
+    final bool isGranted = await notificationService.notificationsPlugin
+        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+        ?.areNotificationsEnabled() ?? false;
+
+    if (!isGranted) {
+      _showPermissionDialog(context);
+    }
+  }
+
+  void _showPermissionDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Permission Required"),
+        content: const Text(
+            "This app needs notification permissions to work. Please allow access in settings."),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("OK"),
+          ),
+        ],
       ),
     );
   }
