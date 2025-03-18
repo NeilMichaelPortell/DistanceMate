@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:firebase_database/firebase_database.dart';
 import '../models/distance_model.dart';
 import '../services/notifi_service.dart'; // Import the NotificationService
 
@@ -15,6 +16,7 @@ class _DistancePageState extends State<DistanceScreen> {
   DistanceModel? _locationB;
   double? _distance;
   final NotificationService _notificationService = NotificationService(); // Initialize the NotificationService
+  final DatabaseReference _database = FirebaseDatabase.instance.ref(); // Initialize the Realtime Database reference
 
   @override
   void initState() {
@@ -106,6 +108,47 @@ class _DistancePageState extends State<DistanceScreen> {
     }
   }
 
+  Future<void> _saveToFirebase() async {
+    if (_locationA != null && _locationB != null && _distance != null) {
+      await _database.child('distances').push().set({
+        'locationA': {'latitude': _locationA!.latitude, 'longitude': _locationA!.longitude},
+        'locationB': {'latitude': _locationB!.latitude, 'longitude': _locationB!.longitude},
+        'distance': _distance,
+        'timestamp': DateTime.now().toIso8601String(),
+      });
+
+      // Optionally, you can show a dialog or some other UI feedback to indicate success
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text("Success"),
+          content: const Text("Data saved successfully"),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("OK"),
+            ),
+          ],
+        ),
+      );
+    } else {
+      // Optionally, you can show a dialog or some other UI feedback to indicate failure
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text("Error"),
+          content: const Text("Please set both locations and calculate the distance"),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("OK"),
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -174,6 +217,17 @@ class _DistancePageState extends State<DistanceScreen> {
                   : "Distance: ${_distance!.toStringAsFixed(2)} km",
               textAlign: TextAlign.center,
               style: const TextStyle(fontSize: 18, color: Colors.white),
+            ),
+            const SizedBox(height: 30),
+
+            ElevatedButton(
+              onPressed: _saveToFirebase,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.orangeAccent,
+                padding: const EdgeInsets.symmetric(vertical: 15.0),
+                textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              child: const Text("Save to Firebase"),
             ),
           ],
         ),

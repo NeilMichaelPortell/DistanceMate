@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "507896320750",
+    "firebase_url": "https://distancemate-580b5-default-rtdb.firebaseio.com",
+    "project_id": "distancemate-580b5",
+    "storage_bucket": "distancemate-580b5.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:507896320750:android:a5e78279efa9bbc3b8d9ff",
+        "android_client_info": {
+          "package_name": "com.example.distancemate"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBPIvOzAAXvliQ55PmF9ofiLiOdeQV4ivw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

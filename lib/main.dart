@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart'; // Import the Firebase options
 import 'widgets/home_screen.dart';
 import 'widgets/distance_screen.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
 
@@ -16,9 +22,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      initialRoute: '/', // Home page as the first screen
+      initialRoute: '/',
       routes: {
-        '/': (context) => const HomeScreen(), // Home page route
+        '/': (context) => const HomeScreen(),
         '/distance': (context) => const DistanceScreen(),
       },
     );
