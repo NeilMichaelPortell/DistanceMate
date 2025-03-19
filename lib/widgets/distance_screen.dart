@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:firebase_database/firebase_database.dart';
 import '../models/distance_model.dart';
-import '../services/notifi_service.dart'; // Import the NotificationService
+import '../services/notifi_service.dart';
 
 class DistanceScreen extends StatefulWidget {
   const DistanceScreen({super.key});
@@ -15,8 +15,8 @@ class _DistancePageState extends State<DistanceScreen> {
   DistanceModel? _locationA;
   DistanceModel? _locationB;
   double? _distance;
-  final NotificationService _notificationService = NotificationService(); // Initialize the NotificationService
-  final DatabaseReference _database = FirebaseDatabase.instance.ref(); // Initialize the Realtime Database reference
+  final NotificationService _notificationService = NotificationService(); 
+  final DatabaseReference _database = FirebaseDatabase.instance.ref();
 
   @override
   void initState() {
@@ -25,6 +25,7 @@ class _DistancePageState extends State<DistanceScreen> {
     _notificationService.initNotification(); // Initialize notifications
   }
 
+  // Check and request location permissions
   Future<void> _checkLocationPermission() async {
     LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
@@ -43,6 +44,7 @@ class _DistancePageState extends State<DistanceScreen> {
     print('Location permission granted.');
   }
 
+  // Show a dialog to prompt the user to enable location permissions
   void _showPermissionDialog() {
     showDialog(
       context: context,
@@ -60,6 +62,7 @@ class _DistancePageState extends State<DistanceScreen> {
     );
   }
 
+  // Set the location (A or B) and show a notification if Location A is set
   Future<void> _setLocation(bool isLocationA) async {
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
@@ -84,6 +87,7 @@ class _DistancePageState extends State<DistanceScreen> {
     });
   }
 
+  // Show a dialog to prompt the user to enable location services 
   void _showLocationServiceDialog() {
     showDialog(
       context: context,
@@ -100,6 +104,7 @@ class _DistancePageState extends State<DistanceScreen> {
     );
   }
 
+  // Calculate the distance between Location A and Location B 
   void _calculateDistance() {
     if (_locationA != null && _locationB != null) {
       setState(() {
@@ -108,6 +113,7 @@ class _DistancePageState extends State<DistanceScreen> {
     }
   }
 
+  // Save the coordinates and distance to Firebase Realtime Database
   Future<void> _saveToFirebase() async {
     if (_locationA != null && _locationB != null && _distance != null) {
       await _database.child('distances').push().set({
@@ -117,34 +123,16 @@ class _DistancePageState extends State<DistanceScreen> {
         'timestamp': DateTime.now().toIso8601String(),
       });
 
-      // Optionally, you can show a dialog or some other UI feedback to indicate success
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text("Success"),
-          content: const Text("Data saved successfully"),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text("OK"),
-            ),
-          ],
-        ),
+      // Show a notification to indicate success
+      _notificationService.showNotification(
+        title: 'Success',
+        body: 'Data saved successfully',
       );
     } else {
-      // Optionally, you can show a dialog or some other UI feedback to indicate failure
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text("Error"),
-          content: const Text("Please set both locations and calculate the distance"),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text("OK"),
-            ),
-          ],
-        ),
+      // Show a notification to indicate failure
+      _notificationService.showNotification(
+        title: 'Error',
+        body: 'Please set both locations and calculate the distance',
       );
     }
   }

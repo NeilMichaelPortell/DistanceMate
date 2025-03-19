@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import '../services/notifi_service.dart'; // Import the NotificationService
-
+import '../services/notifi_service.dart';
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
@@ -71,6 +70,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
+  // Check and request notification permissions
   Future<void> _checkNotificationPermission(BuildContext context, NotificationService notificationService) async {
     final bool isGranted = await notificationService.notificationsPlugin
         .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
@@ -80,7 +80,9 @@ class HomeScreen extends StatelessWidget {
       _showPermissionDialog(context);
     }
   }
+  
 
+  // Show a dialog to prompt the user to enable notifications
   void _showPermissionDialog(BuildContext context) {
     showDialog(
       context: context,
